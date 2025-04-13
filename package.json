@@ -4,10 +4,10 @@
   "description": "Dark mode JSON viewer",
   "main": "main.js",
   "scripts": {
-    "react-start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.js",
+    "react-start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.js --port 3001",
     "react-build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
     "electron-start": "electron-forge start",
-    "start": "concurrently \"npm:react-start\" \"wait-on http://localhost:3000 && npm:electron-start\"",
+    "start": "concurrently \"npm run react-start\" \"wait-on http://localhost:3001 && npm run electron-start\"",
     "package": "npm run react-build && electron-forge package",
     "make": "npm run react-build && electron-forge make"
   },
