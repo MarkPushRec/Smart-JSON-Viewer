@@ -17,7 +17,7 @@
     "electron-is-dev": "^3.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-json-view": "^1.21.3"
+    "react-json-view": "github:mac-s-g/react-json-view#master"
   },
   "devDependencies": {
     "@babel/core": "^7.23.5",
