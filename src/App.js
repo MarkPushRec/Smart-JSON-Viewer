@@ -1,40 +1,46 @@
 import React, { useState } from 'react';
-import ReactJson from 'react-json-view';
-import './App.css'; // We'll create this next
+import JSONTree from 'react-json-tree';
+import './App.css';
 
 const { ipcRenderer } = window.require('electron'); // Use require for Electron modules
 
-// Google AI Studio Inspired Dark Theme for react-json-view
-const aiStudioDarkTheme = {
-    base00: "#131314", // Background
-    base01: "#202124", // Lighter Background (GUIDs, Indexes)
-    base02: "#303134", // Content border
-    base03: "#5F6368", // ? (unused?)
-    base04: "#9AA0A6", // Comments, brackets, syntax guides
-    base05: "#BDC1C6", // ? (unused?)
-    base06: "#E8EAED", // Default Text
-    base07: "#F8F9FA", // ? (unused?)
-    base08: "#F28B82", // NULL, undefined
-    base09: "#FDD663", // Variables, Identifiers (Booleans in our case)
-    base0A: "#FDD663", // Constants, exports (Booleans)
-    base0B: "#81C995", // Strings (Using a slightly different green here) - Replaced by aiStudioBlue
-    // base0B: "#8AB4F8", // Strings - AI Studio Blue
-    base0C: "#78D9EC", // Classes, types
-    base0D: "#8AB4F8", // Function names, methods (Keys in our case) - AI Studio Blue
-    base0E: "#C58AF9", // Keywords, storage, selector (Numbers in our case) - AI Studio Purple
-    base0F: "#F28B82"  // Deprecated, warnings (Null/Undefined)
+// Google AI Studio Inspired Dark Theme for react-json-tree
+const aiStudioTheme = {
+    scheme: 'google-ai-studio',
+    author: 'Smart JSON Viewer',
+    base00: '#131314', // Background
+    base01: '#202124', // Lighter Background
+    base02: '#303134', // Selection background
+    base03: '#5F6368', // Comments, invisibles, line highlighting
+    base04: '#9AA0A6', // Dark foreground
+    base05: '#E8EAED', // Default foreground
+    base06: '#FFFFFF', // Light foreground
+    base07: '#FFFFFF', // Light background
+    base08: '#F28B82', // Red - Variables, XML tags, markup link text, markup lists
+    base09: '#FDD663', // Orange - Integers, boolean, constants, XML attributes, markup link url
+    base0A: '#FDD663', // Yellow - Classes, markup bold, search text background
+    base0B: '#81C995', // Green - Strings (we'll use a different color below)
+    base0C: '#78D9EC', // Aqua - Support, regular expressions, escape chars, markup quotes
+    base0D: '#8AB4F8', // Blue - Functions, methods, attribute IDs, headings
+    base0E: '#C58AF9', // Purple - Keywords, storage, selector, markup italic, diff changed
+    base0F: '#F28B82', // Brown - Deprecated, opening/closing embedded language tags
 };
 
-// Custom styling adjustments for keys, strings, numbers, booleans
-const customAiStyle = {
-    // Customize specific types if needed beyond the theme
-    objectKey: { color: "#8AB4F8" }, // Explicitly set key color - AI Studio Blue
-    string: { color: "#AECBFA"}, // Lighter blue for strings
-    integer: { color: "#C58AF9" }, // Purple for numbers
-    float: { color: "#C58AF9" }, // Purple for numbers
-    boolean: { color: "#FDD663"}, // Yellowish for booleans
+// Override specific value rendering
+const getValueStyle = (_, nodeType, keyPath) => {
+    switch(nodeType) {
+        case 'String':
+            return { color: '#AECBFA' }; // Light blue for strings
+        case 'Number':
+            return { color: '#C58AF9' }; // Purple for numbers
+        case 'Boolean':
+            return { color: '#FDD663' }; // Yellow for booleans
+        case 'Null':
+            return { color: '#F28B82' }; // Red for null
+        default:
+            return {};
+    }
 };
-
 
 function App() {
     const [jsonData, setJsonData] = useState(null);
@@ -74,27 +80,33 @@ function App() {
 
             <div className="json-container">
                 {jsonData && (
-                    <ReactJson
-                        src={jsonData}
-                        theme={aiStudioDarkTheme}
-                        name={false} // Don't display root name "root"
-                        collapsed={1} // Collapse root level by default
-                        collapseStringsAfterLength={50}
-                        displayObjectSize={true}
-                        displayDataTypes={true}
-                        enableClipboard={true}
-                        style={{ // Apply base background and font smoothing
-                            backgroundColor: aiStudioDarkTheme.base00,
-                            padding: '20px',
-                            borderRadius: '5px',
-                            overflowY: 'auto', // Ensure scrolling works
-                            height: 'calc(100vh - 80px)', // Adjust based on toolbar height
-                            fontSmooth: 'always',
-                            WebkitFontSmoothing: 'antialiased',
-                            MozOsxFontSmoothing: 'grayscale',
+                    <JSONTree 
+                        data={jsonData}
+                        theme={aiStudioTheme}
+                        invertTheme={false}
+                        getItemString={(type, data) => (
+                            <span>{type === 'Object' ? `{ ${Object.keys(data).length} keys }` : 
+                                  type === 'Array' ? `[ ${data.length} items ]` : type}</span>
+                        )}
+                        valueRenderer={(raw, value, ...rest) => {
+                            if (typeof value === 'string') {
+                                return <span style={{ color: '#AECBFA' }}>{raw}</span>;
+                            }
+                            if (typeof value === 'number') {
+                                return <span style={{ color: '#C58AF9' }}>{raw}</span>;
+                            }
+                            if (typeof value === 'boolean') {
+                                return <span style={{ color: '#FDD663' }}>{raw.toString()}</span>;
+                            }
+                            if (value === null) {
+                                return <span style={{ color: '#F28B82' }}>null</span>;
+                            }
+                            return raw;
                         }}
-                        // Apply specific type styling
-                        styleOverrides={customAiStyle}
+                        labelRenderer={([key]) => (
+                            <span style={{ color: '#8AB4F8' }}>{key}</span>
+                        )}
+                        shouldExpandNode={() => false} // Collapse by default
                     />
                 )}
                 {!jsonData && !error && (
