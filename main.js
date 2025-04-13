@@ -18,7 +18,7 @@ function createWindow() {
 
     win.loadURL(
         isDev
-            ? 'http://localhost:3000' // Dev server URL
+            ? 'http://localhost:3001' // Dev server URL (changed from 3000 to 3001)
             : `file://${path.join(__dirname, '../build/index.html')}` // Production build path
     );
 
