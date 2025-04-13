@@ -1,0 +1,79 @@
+/* src/App.css */
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #131314; /* Base dark background */
+    color: #E8EAED; /* Default light text */
+    overflow: hidden; /* Prevent body scroll */
+}
+
+.App {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.toolbar {
+    background-color: #202124; /* Slightly lighter dark bg */
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #303134; /* Subtle separator */
+    flex-shrink: 0; /* Prevent toolbar from shrinking */
+    min-height: 40px; /* Ensure consistent height */
+}
+
+.load-button {
+    background-color: #8AB4F8; /* AI Studio Blue */
+    color: #131314; /* Dark text on button */
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.load-button:hover {
+    background-color: #AECBFA; /* Lighter blue on hover */
+}
+
+.file-name {
+    margin-left: 20px;
+    font-size: 14px;
+    color: #9AA0A6; /* Grey text */
+}
+
+.error-message {
+    color: #F28B82; /* Light red/pink for errors */
+    background-color: #202124;
+    padding: 10px 20px;
+    border-bottom: 1px solid #303134;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.json-container {
+    flex-grow: 1; /* Allow container to fill remaining space */
+    overflow-y: auto; /* Enable scrolling ONLY for the JSON view */
+    background-color: #131314; /* Ensure container bg matches */
+}
+
+/* Style the placeholder text */
+.placeholder {
+    padding: 40px;
+    text-align: center;
+    color: #9AA0A6; /* Grey text */
+    font-size: 16px;
+}
+
+/* react-json-view overrides if needed (most styling via theme prop) */
+.react-json-view {
+    font-family: 'Menlo', 'Monaco', 'Consolas', 'Courier New', monospace !important; /* Use monospace font */
+    font-size: 13px !important; /* Adjust font size */
+}
