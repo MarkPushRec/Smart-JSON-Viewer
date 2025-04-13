@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import JSONTree from 'react-json-tree';
+import { JSONTree } from 'react-json-tree'; // Changed from default import to named import
 import './App.css';
 
 const { ipcRenderer } = window.require('electron'); // Use require for Electron modules
